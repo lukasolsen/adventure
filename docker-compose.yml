@@ -5,24 +5,43 @@ services:
     image: postgres:latest
     container_name: adventure_postgres
     environment:
-      POSTGRES_USER: adventure
-      POSTGRES_PASSWORD: adventure
-      POSTGRES_DB: adventure_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - ${POSTGRES_PORT}:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   mongo:
     image: mongo:latest
     container_name: adventure_mongo
+    command:
+      [
+        "mongod",
+        "--replSet",
+        "rs0",
+        "--bind_ip_all",
+        "--keyFile",
+        "/data/configdb/mongo-keyfile",
+      ]
+    ports:
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: adventure
       MONGO_INITDB_ROOT_PASSWORD: adventure
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
+      - ./config/mongo-keyfile:/data/configdb/mongo-keyfile
+    healthcheck:
+      test: >
+        mongosh -u adventure -p adventure --authenticationDatabase admin --eval
+        "try { rs.status().ok } catch (e) {
+          rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }).ok
+        }"
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:latest

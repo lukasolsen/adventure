@@ -12,6 +12,8 @@
   "packageManager": "pnpm@10.9.0",
   "devDependencies": {
     "@total-typescript/tsconfig": "^1.0.4",
-    "@types/node": "^24.1.0"
+    "@types/node": "^24.1.0",
+    "nx": "21.3.10",
+    "tsx": "^4.20.3"
   }
 }

@@ -6,21 +6,17 @@ import { dataService } from "./services/dataService.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json()); // Middleware to parse JSON request bodies
+app.use(express.json());
 
-app.use("/api", apiRouter); // Mount your API routes
+app.use("/api", apiRouter);
 
 async function startServer() {
-  await connectDatabases(); // Connect Prisma to PostgreSQL and MongoDB
-  // dataService constructor will handle Redis and RabbitMQ initialization
+  await connectDatabases();
 
-  // Example of starting a consumer for game events (can be in a separate consumer app)
   dataService.consumeGameEvents((event) => {
-    // This is where your analytics service or other background workers would process events
     console.log(
       `[Analytics Consumer] Received event: ${JSON.stringify(event)}`
     );
-    // e.g., store in an analytics database, update leaderboards, etc.
   });
 
   app.listen(PORT, () => {
@@ -34,7 +30,6 @@ async function startServer() {
 
 startServer();
 
-// Handle graceful shutdown
 process.on("SIGTERM", async () => {
   console.log("SIGTERM received. Shutting down gracefully...");
   await disconnectDatabases();

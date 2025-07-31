@@ -8,7 +8,7 @@ import {
   type ItemCollectedEvent,
 } from "@adventure/shared/types";
 import { Redis } from "ioredis";
-import * as amqp from "amqplib"; // For RabbitMQ
+import * as amqp from "amqplib";
 
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 const RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost";
@@ -26,13 +26,21 @@ class DataService {
 
   private async initRabbitMQ() {
     try {
-      this.rabbitMqConnection = await amqp.connect(RABBITMQ_URL);
+      this.rabbitMqConnection = await amqp.connect({
+        username: "adventure",
+        password: "adventure",
+        protocol: "amqp",
+        hostname: "localhost",
+        port: 5672,
+      });
       if (!this.rabbitMqConnection) {
+        console.error("Failed to connect to RabbitMQ");
         throw new Error("Failed to connect to RabbitMQ");
       }
 
       this.rabbitMqChannel = await this.rabbitMqConnection.createChannel();
       if (!this.rabbitMqChannel) {
+        console.error("Failed to create RabbitMQ channel");
         throw new Error("Failed to create RabbitMQ channel");
       }
 
@@ -42,17 +50,14 @@ class DataService {
       console.log("Connected to RabbitMQ and asserted queue.");
     } catch (error) {
       console.error("Failed to connect to RabbitMQ:", error);
-      // Handle reconnection logic or graceful degradation here in a real app
     }
   }
 
   // --- Player Management (PostgreSQL for Account, MongoDB for Character/Inventory) ---
-
   async createPlayer(
     data: CreatePlayerRequest
   ): Promise<PlayerCreatedResponse> {
     try {
-      // Check if Discord ID already has an account (PostgreSQL)
       const existingAccount = await postgresClient.account.findUnique({
         where: { discordId: data.discordUserId },
       });
@@ -64,16 +69,14 @@ class DataService {
         };
       }
 
-      // Create new Account in PostgreSQL
       const account = await postgresClient.account.create({
         data: {
           discordId: data.discordUserId,
-          username: data.characterName, // Using characterName as initial username
-          email: `${data.discordUserId}@discord.game.com`, // Placeholder email
+          username: data.characterName,
+          email: `${data.discordUserId}@discord.game.com`,
         },
       });
 
-      // Create new Character in MongoDB
       const character = await mongoClient.character.create({
         data: {
           accountId: account.id,
@@ -89,18 +92,17 @@ class DataService {
             hp: 100,
             mana: 50,
           },
-          inventory: { items: [] }, // Empty inventory
+          inventory: { items: [] },
           questLog: [],
         },
       });
 
-      // Cache player data in Redis (e.g., active session data)
       await this.redis.set(
         `player:${data.discordUserId}`,
         JSON.stringify(character),
         "EX",
         3600
-      ); // Cache for 1 hour
+      );
 
       return {
         success: true,
@@ -122,19 +124,16 @@ class DataService {
   }
 
   async getPlayer(discordUserId: string): Promise<Player | null> {
-    // Try to get from Redis cache first
     const cachedPlayer = await this.redis.get(`player:${discordUserId}`);
     if (cachedPlayer) {
       return JSON.parse(cachedPlayer) as Player;
     }
 
-    // If not in cache, fetch from MongoDB
     const character = await mongoClient.character.findUnique({
       where: { discordId: discordUserId },
     });
 
     if (character) {
-      // Cache in Redis before returning
       await this.redis.set(
         `player:${discordUserId}`,
         JSON.stringify(character),
@@ -178,38 +177,32 @@ class DataService {
       currentInventory =
         character.inventory as unknown as PlayerInventoryItem[];
     }
-    // Add item logic (e.g., stack if stackable, add new entry if not)
-    currentInventory.push(item); // Simplified for example
+    currentInventory.push(item);
 
     await mongoClient.character.update({
       where: { discordId: discordUserId },
-      data: { inventory: currentInventory as any }, // Prisma might need `as any` for Json types sometimes
+      data: { inventory: currentInventory as any },
     });
 
-    // Invalidate Redis cache for this player's data/inventory
     await this.redis.del(`player:${discordUserId}`);
-    // Consider a separate cache key for inventory if you want to be more granular
 
     return true;
   }
 
   // --- Global Item Definitions (PostgreSQL) ---
-
   async getItemDefinition(itemId: string): Promise<ItemDefinition | null> {
-    // This would typically be heavily cached in memory on the server
     const definition = await postgresClient.itemDefinition.findUnique({
       where: { id: itemId },
     });
     return definition as ItemDefinition | null;
   }
 
-  // --- Message Queues (RabbitMQ) ---
-
   async publishGameEvent(event: ItemCollectedEvent | any) {
     if (!this.rabbitMqChannel) {
       console.error("RabbitMQ channel not initialized. Cannot publish event.");
       return;
     }
+
     try {
       const buffer = Buffer.from(JSON.stringify(event));
       this.rabbitMqChannel.sendToQueue(GAME_EVENTS_QUEUE, buffer, {
@@ -218,7 +211,6 @@ class DataService {
       console.log(`Published event to RabbitMQ: ${event.eventType}`);
     } catch (error) {
       console.error("Error publishing to RabbitMQ:", error);
-      // Handle transient errors, retry, or log for inspection
     }
   }
 
@@ -227,6 +219,7 @@ class DataService {
       console.error("RabbitMQ channel not initialized. Cannot consume events.");
       return;
     }
+
     this.rabbitMqChannel.consume(
       GAME_EVENTS_QUEUE,
       (msg) => {
@@ -235,15 +228,15 @@ class DataService {
             const event = JSON.parse(msg.content.toString());
             console.log(`Consumed event from RabbitMQ: ${event.eventType}`);
             callback(event);
-            this.rabbitMqChannel?.ack(msg); // Acknowledge message after successful processing
+            this.rabbitMqChannel?.ack(msg);
           } catch (error) {
             console.error("Error processing RabbitMQ message:", error);
-            this.rabbitMqChannel?.nack(msg); // Nack message if processing fails (re-queue or dead-letter)
+            this.rabbitMqChannel?.nack(msg);
           }
         }
       },
       { noAck: false }
-    ); // Important: set noAck to false for explicit acknowledgments
+    );
   }
 }
 
