@@ -4,7 +4,8 @@ import { connectDatabases, disconnectDatabases } from "@adventure/database";
 import { dataService } from "./services/dataService.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+const HOST = process.env.HOST || "localhost";
 
 app.use(express.json());
 
@@ -19,8 +20,8 @@ async function startServer() {
     );
   });
 
-  app.listen(PORT, () => {
-    console.log(`Game Server running on port ${PORT}`);
+  app.listen(PORT, HOST, () => {
+    console.log(`Game Server running on http://${HOST}:${PORT}`);
     console.log(
       "Server API Key:",
       process.env.SERVER_API_KEY ? "Set" : "NOT SET"

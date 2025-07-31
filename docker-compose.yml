@@ -5,9 +5,9 @@ services:
     image: postgres:latest
     container_name: adventure_postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - ${POSTGRES_PORT}:5432
     volumes:
@@ -28,14 +28,14 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: adventure
-      MONGO_INITDB_ROOT_PASSWORD: adventure
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - mongo_data:/data/db
       - ./config/mongo-keyfile:/data/configdb/mongo-keyfile
     healthcheck:
       test: >
-        mongosh -u adventure -p adventure --authenticationDatabase admin --eval
+        mongosh -u ${DATABASE_USER} -p "${DATABASE_PASSWORD}" --authenticationDatabase admin --eval
         "try { rs.status().ok } catch (e) {
           rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }).ok
         }"
@@ -48,6 +48,8 @@ services:
     container_name: adventure_redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
 
   rabbitmq:
     image: rabbitmq:management
@@ -59,6 +61,8 @@ services:
       - "5672:5672"
       - "15672:15672" # Management UI
       - "15692:15692" # Prometheus metrics
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
 volumes:
   postgres_data:
