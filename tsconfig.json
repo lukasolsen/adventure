@@ -1,0 +1,18 @@
+{
+  "extends": "@total-typescript/tsconfig/tsc/no-dom/library-monorepo",
+  "compilerOptions": {
+    "moduleResolution": "nodenext",
+
+    "paths": {
+      "@adventure/database": ["./packages/database/src/index.ts"],
+      "@adventure/shared": ["./packages/shared/src/index.ts"],
+      "@adventure/shared/types": ["./packages/shared/src/types/index.ts"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "packages/database/prisma/generated/mongo-client",
+    "packages/database/prisma/generated/postgres-client"
+  ]
+}

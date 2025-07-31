@@ -1,0 +1,30 @@
+{
+  "name": "@adventure/database",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "push:mongo": "prisma db push --schema=./prisma/mongo.prisma --env-file=../../.env",
+    "push:postgres": "prisma db push --schema=./prisma/postgres.prisma --env-file=../../.env",
+    "generate:mongo": "prisma generate --schema=./prisma/mongo.prisma --env-file=../../.env",
+    "generate:postgres": "prisma generate --schema=./prisma/postgres.prisma --env-file=../../.env",
+    "generate": "pnpm generate:mongo && pnpm generate:postgres --env-file=../../.env",
+    "migrate:mongo": "prisma migrate dev --name init --schema=./prisma/mongo.prisma --env-file=../../.env",
+    "migrate:postgres": "prisma migrate dev --name init --schema=./prisma/postgres.prisma --env-file=../../.env",
+    "migrate": "pnpm migrate:mongo && pnpm migrate:postgres --env-file=../../.env",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .ts,.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.9.0",
+  "devDependencies": {
+    "prisma": "^6.13.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.13.0",
+    "@prisma/extension-accelerate": "^2.0.2"
+  }
+}

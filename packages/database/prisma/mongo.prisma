@@ -1,0 +1,27 @@
+datasource mongodb {
+  provider = "mongodb"
+  url      = env("DATABASE_URL_MONGODB")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output = "./generated/mongo-client"
+}
+
+
+// Player Character (MongoDB) - flexible, dynamic data
+model Character {
+  id           String                @id @default(auto()) @map("_id") @mongodb.ObjectId
+  accountId    String                // References Account.id (PostgreSQL)
+  discordId    String                @unique // Same as Account's discordId for direct lookup
+  characterName String               @unique
+  level        Int                   @default(1)
+  experience   Int                   @default(0)
+  gold         Int                   @default(0)
+  stats        Json                  // e.g., { strength: 10, agility: 10, hp: 100 }
+  inventory    Json                  // JSON array of PlayerInventoryItem
+  questLog     Json                  // Array of quest progress
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  @@map("characters")
+}

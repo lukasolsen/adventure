@@ -1,0 +1,39 @@
+datasource postgresdb {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_POSTGRES")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output = "./generated/postgres-client"
+}
+
+model Account {
+  id           String    @id @default(uuid()) @map("_id")
+  discordId    String    @unique // Link to Discord user ID
+  username     String
+  email        String    @unique
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  characters_ids String[] @default([]) // Array of Character IDs (MongoDB)
+  @@map("accounts")
+}
+
+model ItemDefinition {
+  id          String   @id // e.g., "ITEM_STICK_BASIC"
+  name        String
+  description String?
+  type        String // e.g., "WEAPON", "CONSUMABLE"
+  rarity      String
+  stackable   Boolean
+  maxStackSize Int?
+  iconUrl     String
+  properties  Json // JSONB in Postgres, direct JSON in Prisma
+  @@map("item_definitions")
+}
+
+
+// Remember to run:
+// npx prisma db push --preview-feature // For MongoDB (no migrations needed usually)
+// npx prisma migrate dev --name init --preview-feature // For PostgreSQL (creates migration files)
+// npx prisma generate // To generate Prisma Client for both

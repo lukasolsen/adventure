@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: adventure_postgres
+    environment:
+      POSTGRES_USER: adventure
+      POSTGRES_PASSWORD: adventure
+      POSTGRES_DB: adventure_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:latest
+    container_name: adventure_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: adventure
+      MONGO_INITDB_ROOT_PASSWORD: adventure
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:latest
+    container_name: adventure_redis
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: adventure_rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: adventure
+      RABBITMQ_DEFAULT_PASS: adventure
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Management UI
+      - "15692:15692" # Prometheus metrics
+
+volumes:
+  postgres_data:
+  mongo_data:
+  redis_data:
+  rabbitmq_data:
