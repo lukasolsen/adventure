@@ -1,22 +1,19 @@
 import express from "express";
 import { dataService } from "../services/dataService.js";
 import {
+  Events,
   type CreatePlayerRequest,
   type ItemCollectedEvent,
   type PlayerCreatedResponse,
 } from "@adventure/shared/types";
+import { eventService } from "../events/eventService.js";
+import { apiMiddleware } from "./api.middleware.js";
 
 const router: express.Router = express.Router();
 
-// Middleware to secure API calls from the bot
-router.use((req, res, next) => {
-  const apiKey = req.headers["x-api-key"];
-  if (apiKey === process.env.SERVER_API_KEY) {
-    next();
-  } else {
-    res.status(403).json({ message: "Unauthorized API Access" });
-  }
-});
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
+router.use(apiMiddleware);
 
 router.post("/player/create", async (req, res) => {
   const { discordUserId, characterName } = req.body as CreatePlayerRequest;
@@ -30,6 +27,19 @@ router.post("/player/create", async (req, res) => {
     characterName,
   });
   if (result.success) {
+    if (!result.player) {
+      return res.status(500).json({ message: "Failed to create player" });
+    }
+
+    await eventService.publishEvent({
+      eventType: Events.PLAYER_CREATED,
+      timestamp: new Date().toISOString(),
+      playerId: result.player.id,
+      data: {
+        discordUserId,
+        characterName,
+      },
+    });
     res.status(201).json(result.player);
   } else {
     res.status(409).json({ message: result.message });
@@ -43,6 +53,21 @@ router.get("/player/:discordUserId", async (req, res) => {
     res.json(player);
   } else {
     res.status(404).json({ message: "Player not found" });
+  }
+});
+
+router.post("/player/:discordUserId/:action", async (req, res) => {
+  const { discordUserId, action } = req.params;
+
+  switch (action) {
+    case "walk":
+      // Handle player walking action
+      // This could involve updating player position, etc.
+      res.json({ message: `Player ${discordUserId} walked` });
+      break;
+      break;
+    default:
+      res.status(400).json({ message: "Unknown action" });
   }
 });
 
@@ -77,14 +102,16 @@ router.post("/player/:discordUserId/collect-item", async (req, res) => {
   if (success) {
     // Publish an event to the message queue for analytics/logging
     const event: ItemCollectedEvent = {
-      eventType: "ITEM_COLLECTED",
+      eventType: Events.ITEM_COLLECTED,
       timestamp: new Date().toISOString(),
       playerId: discordUserId,
-      itemDefinitionId: itemDefinitionId,
-      quantity: quantity,
-      location: location,
+      data: {
+        itemDefinitionId: itemDefinitionId,
+        quantity: quantity,
+        location: location,
+      },
     };
-    await dataService.publishGameEvent(event);
+    await eventService.publishEvent(event);
 
     res.json({
       message: "Item collected and added to inventory",

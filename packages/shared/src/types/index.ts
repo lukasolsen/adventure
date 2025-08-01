@@ -1,9 +1,10 @@
 export interface Player {
-  id: string; // Discord User ID for consistent linking
+  id: string;
   characterName: string;
   level: number;
+  experience: number;
+
   gold: number;
-  // Add other core player stats that are always present
 }
 
 export interface ItemDefinition {
@@ -34,11 +35,25 @@ export interface PlayerCreatedResponse {
   message: string;
 }
 
-export interface ItemCollectedEvent {
-  eventType: "ITEM_COLLECTED";
+export enum Events {
+  PLAYER_CREATED = "PLAYER_CREATED",
+  ITEM_COLLECTED = "ITEM_COLLECTED",
+  PLAYER_LEVEL_UP = "PLAYER_LEVEL_UP",
+  PLAYER_GOLD_CHANGED = "PLAYER_GOLD_CHANGED",
+}
+
+export interface IEvent<T = any> {
+  eventType: Events;
+  playerId?: string; // Optional, only for player-related events
+  data: T;
   timestamp: string;
-  playerId: string;
-  itemDefinitionId: string;
-  quantity: number;
-  location: { x: number; y: number; z: number; mapId: string };
+}
+
+export interface ItemCollectedEvent extends IEvent {
+  eventType: Events.ITEM_COLLECTED;
+  data: {
+    itemDefinitionId: string;
+    quantity: number;
+    location: { x: number; y: number; z: number; mapId: string };
+  };
 }

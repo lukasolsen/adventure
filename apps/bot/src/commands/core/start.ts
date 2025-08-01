@@ -1,10 +1,15 @@
-import { SlashCommandBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+  type CacheType,
+} from "discord.js";
 import type { SlashCommand } from "../../types/command.js";
 import { ServerApiClient } from "../../lib/apiClient.js";
+import { Lang } from "../../services/lang.js";
 
 export const data = new SlashCommandBuilder()
   .setName("start")
-  .setDescription("Starts your adventure in Aethelgard Online!")
+  .setDescription("Starts your adventure!")
   .addStringOption((option) =>
     option
       .setName("character_name")
@@ -20,12 +25,13 @@ const command: SlashCommand = {
     await execute(interaction);
   },
   helpText:
-    "Use this command to create your character and start your adventure in Aethelgard Online.",
+    "Use this command to create your character and start your adventure.",
 };
 
-export async function execute(interaction: any) {
-  // Discord.js Interaction types for real use
-  await interaction.deferReply({ ephemeral: true }); // Acknowledge interaction immediately
+export async function execute(
+  interaction: ChatInputCommandInteraction<CacheType>
+) {
+  await interaction.deferReply({ ephemeral: true });
 
   const discordUserId = interaction.user.id;
   const characterName = interaction.options.getString("character_name");
@@ -40,15 +46,30 @@ export async function execute(interaction: any) {
       return;
     }
 
+    if (
+      !characterName ||
+      characterName.length < 3 ||
+      characterName.length > 20
+    ) {
+      await interaction.editReply(
+        "Character name must be between 3 and 20 characters long."
+      );
+      return;
+    }
+
     const createResult = await apiClient.createPlayer({
       discordUserId,
       characterName,
     });
 
     if (createResult.success && createResult.player) {
-      await interaction.editReply(
-        `Welcome, **${createResult.player.characterName}**! Your adventure in Aethelgard Online begins now. You have ${createResult.player.gold} gold.`
-      );
+      await interaction.editReply({
+        embeds: [
+          Lang.getEmbed("displayEmbeds.start", interaction.locale, {
+            TARGET: createResult.player.characterName,
+          }),
+        ],
+      });
     } else {
       await interaction.editReply(
         `Failed to create your character: ${createResult.message}`

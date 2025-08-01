@@ -1,0 +1,33 @@
+[
+  {
+    "id": "ITEM_STICK_BASIC",
+    "name": "Wooden Stick",
+    "description": "A simple wooden stick.",
+    "type": "WEAPON",
+    "rarity": "COMMON",
+    "stackable": false,
+    "iconUrl": "https://cdn.example.com/icons/stick.png",
+    "properties": {
+      "damage_min": 1,
+      "damage_max": 3,
+      "attack_speed": 1.5,
+      "weapon_type": "Blunt"
+    }
+  },
+  {
+    "id": "ITEM_SWORD_FLAMING_EPIC",
+    "name": "Flaming Epic Sword",
+    "description": "A sword imbued with a powerful flame enchantment.",
+    "type": "WEAPON",
+    "rarity": "EPIC",
+    "stackable": false,
+    "iconUrl": "https://cdn.example.com/icons/flaming_sword.png",
+    "properties": {
+      "damage_min": 150,
+      "damage_max": 200,
+      "attack_speed": 1.1,
+      "weapon_type": "Sword",
+      "effect_id": "ENCHANTMENT_FLAME_DAMAGE"
+    }
+  }
+]

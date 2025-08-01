@@ -1,0 +1,15 @@
+[
+  {
+    "id": "ITEM_BREAD_RUSTIC",
+    "name": "Rustic Bread",
+    "description": "A loaf of simple, rustic bread.",
+    "type": "CONSUMABLE",
+    "rarity": "COMMON",
+    "stackable": true,
+    "max_stack_size": 10,
+    "iconUrl": "https://cdn.example.com/icons/bread.png",
+    "properties": {
+      "healing_amount": 50
+    }
+  }
+]

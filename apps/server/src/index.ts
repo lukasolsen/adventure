@@ -1,7 +1,8 @@
 import express from "express";
 import apiRouter from "./api/index.js";
 import { connectDatabases, disconnectDatabases } from "@adventure/database";
-import { dataService } from "./services/dataService.js";
+import { Events } from "@adventure/shared/types";
+import { eventService } from "./events/index.js";
 
 const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
@@ -14,11 +15,8 @@ app.use("/api", apiRouter);
 async function startServer() {
   await connectDatabases();
 
-  dataService.consumeGameEvents((event) => {
-    console.log(
-      `[Analytics Consumer] Received event: ${JSON.stringify(event)}`
-    );
-  });
+  await eventService.initRabbitMQ();
+  await eventService.consumeEvents();
 
   app.listen(PORT, HOST, () => {
     console.log(`Game Server running on http://${HOST}:${PORT}`);

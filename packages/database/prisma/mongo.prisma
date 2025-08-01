@@ -9,7 +9,6 @@ generator client {
 }
 
 
-// Player Character (MongoDB) - flexible, dynamic data
 model Character {
   id           String                @id @default(auto()) @map("_id") @mongodb.ObjectId
   accountId    String                // References Account.id (PostgreSQL)
@@ -24,4 +23,13 @@ model Character {
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
   @@map("characters")
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(auto()) @map("_id") @mongodb.ObjectId
+  eventType String   // e.g., "character_created", "item_collected"
+  payload   Json     // JSON object with event details
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("analytics_events")
 }
