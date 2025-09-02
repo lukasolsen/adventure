@@ -19,6 +19,39 @@ model Account {
   @@map("accounts")
 }
 
+model QuestDefinition {
+  id          String   @id // e.g., "CONSUME_WATER"
+  name        String
+  description String?
+  category    String // e.g., "COMBAT", "MOVEMENT"
+  difficulty  String
+  prerequisites String[] @default([]) // Array of prerequisite quest IDs
+  properties  Json
+  @@map("quest_definitions")
+}
+
+model AchievementDefinition {
+  id          String   @id // e.g., "ACHIEVEMENT_FIRST_LOGIN"
+  name        String
+  description String?
+  type        String // e.g., "GENERAL", "CHARACTER", "ACCOUNT"
+  criteria    Json     // JSON object defining the achievement criteria
+  iconUrl     String
+  properties  Json
+  @@map("achievement_definitions")
+}
+
+model JournalDefinition {
+  id          String   @id // e.g., "JOURNAL_FIRST_ADVENTURE"
+  title       String
+  content     String
+  author      String // e.g., "System", "Player"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  properties  Json
+  @@map("journal_definitions")
+}
+
 model ItemDefinition {
   id          String   @id // e.g., "ITEM_STICK_BASIC"
   name        String
@@ -28,7 +61,7 @@ model ItemDefinition {
   stackable   Boolean
   maxStackSize Int?
   iconUrl     String
-  properties  Json // JSONB in Postgres, direct JSON in Prisma
+  properties  Json
   @@map("item_definitions")
 }
 

@@ -1,15 +1,27 @@
 [
   {
-    "id": "ITEM_BREAD_RUSTIC",
-    "name": "Rustic Bread",
-    "description": "A loaf of simple, rustic bread.",
+    "id": "ITEM_CONSUMABLE_BREAD",
+    "name": "Bread Roll",
+    "description": "Restores a bit of stamina when eaten.",
     "type": "CONSUMABLE",
     "rarity": "COMMON",
     "stackable": true,
-    "max_stack_size": 10,
-    "iconUrl": "https://cdn.example.com/icons/bread.png",
+    "iconUrl": "🍞",
     "properties": {
-      "healing_amount": 50
+      "restore_stamina": 10
+    }
+  },
+  {
+    "id": "ITEM_CONSUMABLE_JUICE",
+    "name": "Juice Box",
+    "description": "A cool drink. Gives energy and a small bonus to discovering items.",
+    "type": "CONSUMABLE",
+    "rarity": "COMMON",
+    "stackable": true,
+    "iconUrl": "🧃",
+    "properties": {
+      "restore_stamina": 15,
+      "bonus_find_chance": 0.05
     }
   }
 ]

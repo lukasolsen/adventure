@@ -1,18 +1,15 @@
 import { PrismaClient as PostgresClient } from "../prisma/generated/postgres-client/index.js";
 import { PrismaClient as MongoClient } from "../prisma/generated/mongo-client/index.js";
 import * as fs from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { join } from "path";
+import { __dirname } from "@adventure/shared/utils";
 
 export const postgresClient = new PostgresClient();
 export const mongoClient = new MongoClient();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 console.log("Current directory:", __dirname);
 
-const itemDataPath = join(__dirname, "../../shared/data", "items");
+const itemDataPath = join(__dirname, "../../../shared/data", "items");
 
 export async function connectDatabases() {
   try {

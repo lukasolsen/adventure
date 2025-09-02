@@ -1,0 +1,38 @@
+[
+  {
+    "id": "ITEM_GEAR_HAT_BEANIE",
+    "name": "Wool Beanie",
+    "description": "Keeps your head warm and gives a bit of luck.",
+    "type": "GEAR",
+    "rarity": "COMMON",
+    "stackable": false,
+    "iconUrl": "🧢",
+    "properties": {
+      "luck": 1
+    }
+  },
+  {
+    "id": "ITEM_GEAR_TOOL_MAGNETROD",
+    "name": "Magnet Rod",
+    "description": "Helps attract metal scraps and pebbles on the trail.",
+    "type": "GEAR",
+    "rarity": "UNCOMMON",
+    "stackable": false,
+    "iconUrl": "🧲",
+    "properties": {
+      "find_rate_bonus": 0.1
+    }
+  },
+  {
+    "id": "ITEM_GEAR_CHARM_SHELL",
+    "name": "Lucky Shell",
+    "description": "A seashell you found by the shore—rumored to improve your fortune.",
+    "type": "GEAR",
+    "rarity": "UNCOMMON",
+    "stackable": false,
+    "iconUrl": "🐚",
+    "properties": {
+      "luck": 2
+    }
+  }
+]

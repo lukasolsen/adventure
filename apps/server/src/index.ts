@@ -1,8 +1,9 @@
 import express from "express";
 import apiRouter from "./api/index.js";
 import { connectDatabases, disconnectDatabases } from "@adventure/database";
-import { Events } from "@adventure/shared/types";
 import { eventService } from "./events/index.js";
+import dotenv from "dotenv";
+dotenv.config({ path: "../../.env" });
 
 const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;

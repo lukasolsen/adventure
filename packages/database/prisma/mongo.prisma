@@ -14,12 +14,14 @@ model Character {
   accountId    String                // References Account.id (PostgreSQL)
   discordId    String                @unique // Same as Account's discordId for direct lookup
   characterName String               @unique
-  level        Int                   @default(1)
-  experience   Int                   @default(0)
-  gold         Int                   @default(0)
-  stats        Json                  // e.g., { strength: 10, agility: 10, hp: 100 }
-  inventory    Json                  // JSON array of PlayerInventoryItem
-  questLog     Json                  // Array of quest progress
+  pebbles       Int                   @default(0)
+  health       Int                   @default(100)
+  stamina      Int                   @default(100)
+  stats        Json
+  inventory    Json
+  questLog     Json 
+  achievements Json
+  journals     Json
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
   @@map("characters")

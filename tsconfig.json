@@ -6,7 +6,8 @@
     "paths": {
       "@adventure/database": ["./packages/database/src/index.ts"],
       "@adventure/shared": ["./packages/shared/src/index.ts"],
-      "@adventure/shared/types": ["./packages/shared/src/types/index.ts"]
+      "@adventure/shared/types": ["./packages/shared/src/types/index.ts"],
+      "@adventure/shared/utils": ["./packages/shared/src/utils/index.ts"]
     }
   },
   "exclude": [

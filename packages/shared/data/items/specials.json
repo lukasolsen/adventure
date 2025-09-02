@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ITEM_SPECIAL_FROG_TOKEN",
+    "name": "Frog Token",
+    "description": "Grants access to hidden paths or events in certain areas.",
+    "type": "SPECIAL",
+    "rarity": "RARE",
+    "stackable": false,
+    "iconUrl": "🐸",
+    "properties": {
+      "unlock_hidden_path": true
+    }
+  },
+  {
+    "id": "ITEM_SPECIAL_JOURNAL_PAGE",
+    "name": "Torn Journal Page",
+    "description": "A fragment of someone's journal. Adds an entry to your journal.",
+    "type": "SPECIAL",
+    "rarity": "UNCOMMON",
+    "stackable": false,
+    "iconUrl": "📜",
+    "properties": {
+      "adds_journal_entry": true
+    }
+  },
+  {
+    "id": "ITEM_SPECIAL_RAIL_KEY",
+    "name": "Old Rail Key",
+    "description": "A crusty key that might open Railman's Crates or the Empty Station.",
+    "type": "SPECIAL",
+    "rarity": "RARE",
+    "stackable": false,
+    "iconUrl": "🛤️",
+    "properties": {
+      "opens_rail_crate": true
+    }
+  },
+  {
+    "id": "ITEM_SPECIAL_CAMP_MIXTAPE",
+    "name": "Lost Mixtape",
+    "description": "Plays ambient tunes at your camp when set up.",
+    "type": "SPECIAL",
+    "rarity": "RARE",
+    "stackable": false,
+    "iconUrl": "🎧",
+    "properties": {
+      "camp_music": true
+    }
+  }
+]

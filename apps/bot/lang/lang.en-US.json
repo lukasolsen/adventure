@@ -39,6 +39,19 @@
           }
         ]
       },
+      "profile": {
+        "title": "Profile",
+        "fields": [
+          {
+            "name": "Character Name",
+            "value": ["{{TARGET}}"]
+          },
+          {
+            "name": "Character Level",
+            "value": ["{{LEVEL}}"]
+          }
+        ]
+      },
 
       "helpContactSupport": {
         "title": "Help - {{REF:helpOptions.contactSupport}}",

@@ -7,16 +7,6 @@ export interface Player {
   gold: number;
 }
 
-export interface ItemDefinition {
-  id: string; // e.g., "ITEM_STICK_BASIC"
-  name: string;
-  description: string;
-  type: "WEAPON" | "CONSUMABLE" | "MATERIAL" | "ARMOR";
-  iconUrl: string; // URL to CDN asset
-  stackable: boolean; // Can this item be stacked in inventory?
-  properties: Record<string, any>;
-}
-
 export interface PlayerInventoryItem {
   instanceId: string; // Unique ID for this specific item in inventory (UUID)
   definitionId: string; // References ItemDefinition.id
@@ -36,6 +26,7 @@ export interface PlayerCreatedResponse {
 }
 
 export enum Events {
+  PLAYER_WALKED = "PLAYER_WALKED",
   PLAYER_CREATED = "PLAYER_CREATED",
   ITEM_COLLECTED = "ITEM_COLLECTED",
   PLAYER_LEVEL_UP = "PLAYER_LEVEL_UP",
@@ -57,3 +48,5 @@ export interface ItemCollectedEvent extends IEvent {
     location: { x: number; y: number; z: number; mapId: string };
   };
 }
+
+export * from "./items.js";

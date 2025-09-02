@@ -1,0 +1,22 @@
+[
+  {
+    "id": "ITEM_CONTAINER_TRAIL_CRATE",
+    "name": "Trail Crate",
+    "description": "A crate found after a long walk. Contains random gear or snacks.",
+    "type": "CONTAINER",
+    "rarity": "COMMON",
+    "stackable": false,
+    "iconUrl": "📦",
+    "properties": {}
+  },
+  {
+    "id": "ITEM_CONTAINER_MAIL_DROP",
+    "name": "Mail Drop",
+    "description": "A puzzle envelope delivered by a bird after resting.",
+    "type": "CONTAINER",
+    "rarity": "UNCOMMON",
+    "stackable": false,
+    "iconUrl": "🐦📬",
+    "properties": {}
+  }
+]

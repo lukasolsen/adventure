@@ -4,6 +4,9 @@ import loadEvents from "./handlers/events.js";
 import type { SlashCommand } from "./types/command.js";
 import loadCommands from "./handlers/commands.js";
 
+import dotenv from "dotenv";
+dotenv.config({ path: "../../.env" });
+
 const client = new Client({
   allowedMentions: {
     parse: ["users", "roles"],

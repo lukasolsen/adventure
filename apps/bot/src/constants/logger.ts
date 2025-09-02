@@ -5,13 +5,12 @@ import path from "path";
 type LogLevel = "info" | "warn" | "error" | "debug" | "trace";
 
 export class Logger {
-  private logger = pino();
+  private logger: pino.Logger;
   private static instance: Logger;
   private logDirectory: string;
 
   private constructor() {
     this.logDirectory = path.resolve("logs");
-
     this.ensureLogDirectoryExists();
 
     this.logger = pino(
@@ -19,8 +18,8 @@ export class Logger {
         name: "adventure-bot",
         level: "info",
         timestamp: pino.stdTimeFunctions.isoTime,
-      },
-      pino.destination(path.join(this.logDirectory, "adventure-bot.log"))
+      }
+      //pino.destination(path.join(this.logDirectory, "adventure-bot.log"))
     );
   }
 
